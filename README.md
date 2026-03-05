@@ -44,41 +44,6 @@ AI-powered PR analyzer that checks diffs against configurable rules, scores risk
 
 ---
 
-## High-level architecture
-
-flowchart LR
-  gh[GitHub PR]
-  webhook[Webhook/CLI]
-  queue[BullMQ Queue]
-  worker[PR Analysis Worker]
-
-  githubClient["GitHub Client (fetch diff, post comment)"]
-  diffService[Diff Parser]
-  rulesEngine[Rule Engine]
-  riskScorer[Risk Scorer]
-  driftDetector[Drift Detector]
-  aiSummary["AI Summary (Groq LLaMA)"]
-  ragRetrieve["RAG Retrieve (similar PRs)"]
-  ragStore["RAG Store (embeddings)"]
-  db[Postgres + pgvector]
-
-  gh --> webhook
-  webhook --> queue
-  queue --> worker
-
-  worker --> githubClient
-  worker --> diffService
-  worker --> rulesEngine
-  worker --> riskScorer
-  worker --> driftDetector
-  worker --> aiSummary
-  worker --> ragRetrieve
-  worker --> ragStore
-  worker --> db
-
-  ragRetrieve --> db
-  ragStore --> db
-
 **Main flow:**
 
 1. Receive PR info (owner/repo/PR/base/head) via webhook or CLI.
