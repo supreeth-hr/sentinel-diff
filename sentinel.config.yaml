@@ -1,0 +1,26 @@
+# Sentinel-Diff project rules (example).
+# Repos can place this at repo root; Sentinel loads it when analyzing a PR.
+
+# Only these package names (or patterns) are allowed in imports. Others are flagged.
+allowedLibraries:
+  - express
+  - fastify
+  - zod
+  - "node:"   # prefix pattern for built-in Node modules
+
+# Paths that are considered sensitive — changes here increase risk score.
+sensitivePaths:
+  - auth/
+  - payment/
+  - src/secrets
+
+# In strict mode, CI fails if risk score is above this (1-10). Omit to disable.
+riskThreshold: 7
+
+# Optional: architecture rules for drift detection.
+# Uncomment and set forbiddenPattern (regex) to flag matching added lines in pathPattern paths.
+# architecture:
+#   - name: Controllers must not access DB
+#     pathPattern: "src/controllers"
+#     description: Use the service layer instead.
+#     forbiddenPattern: "import.*from.*['\"]\\.*/(db|database)"
