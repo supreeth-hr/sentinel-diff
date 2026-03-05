@@ -46,25 +46,38 @@ AI-powered PR analyzer that checks diffs against configurable rules, scores risk
 
 ## High-level architecture
 
-```mermaid
 flowchart LR
-  gh[GitHub PR] --> webhook[Webhook/CLI]
-  webhook --> queue[BullMQ Queue]
-  queue --> worker[PR Analysis Worker]
+  gh[GitHub PR]
+  webhook[Webhook/CLI]
+  queue[BullMQ Queue]
+  worker[PR Analysis Worker]
 
-  worker --> githubClient[GitHub Client\n(fetch diff, post comment)]
-  worker --> diffService[Diff Parser]
-  worker --> rulesEngine[Rule Engine]
-  worker --> riskScorer[Risk Scorer]
-  worker --> driftDetector[Drift Detector]
-  worker --> aiSummary[AI Summary\n(Groq LLaMA)]
-  worker --> ragRetrieve[RAG Retrieve\n(similar PRs)]
-  worker --> ragStore[RAG Store\n(embeddings)]
-  worker --> db[Postgres + pgvector]
+  githubClient["GitHub Client (fetch diff, post comment)"]
+  diffService[Diff Parser]
+  rulesEngine[Rule Engine]
+  riskScorer[Risk Scorer]
+  driftDetector[Drift Detector]
+  aiSummary["AI Summary (Groq LLaMA)"]
+  ragRetrieve["RAG Retrieve (similar PRs)"]
+  ragStore["RAG Store (embeddings)"]
+  db[Postgres + pgvector]
+
+  gh --> webhook
+  webhook --> queue
+  queue --> worker
+
+  worker --> githubClient
+  worker --> diffService
+  worker --> rulesEngine
+  worker --> riskScorer
+  worker --> driftDetector
+  worker --> aiSummary
+  worker --> ragRetrieve
+  worker --> ragStore
+  worker --> db
 
   ragRetrieve --> db
   ragStore --> db
-```
 
 **Main flow:**
 
